@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+
+
+<head>
+    <!--About the page-->
+    <title>Schedule</title>
+    <!-- for a favicon <link rel="icon" type="image/jpeg" href="fill this in">-->
+
+    <!--CSS-->
+    <link rel="stylesheet" href="style.css"> 
+    <!--keywords, etc https://www.w3schools.com/html/html_head.asp-->
+</head>
+
+<body>
+    <h1>Schedule</h1>
+
+    <!--Instructions for use-->
+    <h3>How to use</h3>
+    <ol>
+        <li>Copy your schedule from your syllabus/schedule pdf to Excel/Google Sheets</li>
+        <li>Save the file/ download it</li>
+        <li>Repeat for each class, one file per class</li>
+        <li>Use the browse buttons below to select each csv file</li>
+        <li>Click Submit All Schedules</li>
+    </ol>
+
+    <!--Input the csv files-->
+    <div class="container">
+    <form id="scheduleInput" action="/upload" enctype="multipart/form-data" method="post" class="form">
+        <!-- alt method: <input type="file" id="class_schedule_csvs" multiple /> -->
+
+        <div class="field">
+            <label for="schedulecsv">Class 1 Schedule</label>
+            <input type="file" id="schedule1csv" accept=".csv" name="file1csv" >
+            <!--https://www.w3schools.cosm/html/html_form_input_types.asp-->
+            <br>
+        </div>
+        
+        <div class="field">
+            <label for="schedulecsv">Class 2 Schedule</label>
+            <input type="file" id="schedule2csv" accept=".csv" name="file2csv">
+            <br>
+        </div>
+
+        <div class="field">
+            <label for="schedulecsv">Class 3 Schedule</label>
+            <input type="file" id="schedule3csv" accept=".csv" name="file3csv">
+            <br>
+        </div>  
+
+        <div class="field">
+            <label for="schedulecsv">Class 4 Schedule</label>
+            <input type="file" id="schedule4csv" accept=".csv" name="file4csv">
+            <br>
+        </div>
+
+        <input type="submit" value="Submit All Schedules" id="schedules" onclick="form.submit()">
+        <!--https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications-->
+        <br>
+
+        <input type="button" value="Reset" id="resetscheduleinput" onclick="form.reset();">
+        <!--https://javascript.plainenglish.io/how-to-upload-file-from-a-webpage-e3e9fa727d73-->
+    
+    </form>
+    </div>
+
+    <!--To say which columns are which-->
+    <div class="container">
+        <form>
+            <div class="field>
+                <label for="col1">Column 1 Contents:</label>
+                <select id="coltype" name="col">
+                    <option value="date">Date</option>
+                    <option value="week">Week</option>
+                    <option value="topic">Topic</option>
+                    <option value="delete">Delete</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    
+    <br>
+
+    <!--Schedule-->
+    <table id="all-class-schedule">
+        <caption>Semester Schedule</caption>
+        <thead>
+            <tr>
+            <th>Date</th>
+            <th>Reading</th>
+            <th>Assignment</th>
+            </tr>
+        </thead>
+
+        <tbody id="assignments">
+                
+        </tbody>
+
+    </table>
+
+
+
+    
+
+    <!-- at the bottom to not slow loading of html -->
+    <script src="scheduleCollage.js"></script>
+    
+</body>
+
+</html>

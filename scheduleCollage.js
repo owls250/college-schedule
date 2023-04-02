@@ -6,75 +6,76 @@ form.addEventListener('submit', (event) => {
   // validation
 
   // not valid: 
-  event.preventDefault();
+  //event.preventDefault();
 
-  //form.submit();
   handleFiles();
 
 }); // https://www.javascripttutorial.net/javascript-dom/javascript-form/
-//const inputElement = document.getElementById("schedule1csv");
-//inputElement.addEventListener("change", handleFiles, false);
 
-form.addEventListener('reset', (ev) => {
+// right now just in the html
+/* form.addEventListener('reset', (ev) => {
   console.log( 'reset form listener');
   form.reset();
-});
+}); */
+
 
 function handleFiles() {
   console.log('start handle files');
-  //const fileList = this.files; /* now you can work with the file list */
 
-  const allAssign = [];
+  const allAssign = []; // all assignments
+
   console.log('form elements' + form.elements);
-  console.log( 'form element 1: ' + form.elements[0]);
-  console.log('form length: ' + form.length);
+  console.log( 'form element 1: ' + form[1].value);
+  console.log('form length: ' + form.elements.length);
   
-  //for (let i = 0; i<form.length; i++) {
-  //  console.log( i + ": " + typeof(form[i]));
-  //  console.log( form[i]);
-
-  //}
+  // read each file and add contents to list
   for (let element = 0; element < form.elements.length; element++) {
-    //console.log("file ", element);
-    allAssign.push( csvtoarray( form.elements[element]));
+    console.log("file ", element);
+    const [file] = csvtoarray( form[element].value);
+    
+    allAssign.push( file);
   
   }
   // can't do for in with just a number, must be a list
-
-  //for (file in fileList) {
-  //  allEvents.push( csvtoarray( file));
-  //}
   
   // sort
-  //alert("Hi2")
+  
   if (allAssign == null) {
     console.log( "null array");
     } else { displayarray( allAssign); }
 
-  //alert('done');
   
 }
 
 function csvtoarray( csvfile) {
     console.log('csv reader');
-    //alert('read');
-    let reader = new FileReader(); 
-    console.log( "the type of the csv file: ", typeof(csvfile));
-    console.log( "the file: ", csvfile);
-    //var array;
-    reader.onload = function( event) {
+
+    console.log('type: '+typeof(csvfile))
+    console.log( csvfile[0] instanceof Blob)
+    
+    const reader = new FileReader(); 
+    reader.readAsText( csvfile);
+    
+    reader.onload = function( e) {
         console.log('onload');
+        
         var array = reader.result;
         console.log( "array: ", array); // https://stackoverflow.com/questions/13729301/html5-file-api-how-to-see-the-result-of-readastext
         return array
     };
-    form.onchange = function (event) {
+    reader.onerror = function (error) {
+      console.log( 'error: ' + csvfile);
+    };
+    form.onchange = function (e) {
         console.log('onchange');
         reader.readAsText(csvfile);
     
     };
+    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
+    
 
 }
+
 
 function displayarray( data) {
     console.log("begin display array function");

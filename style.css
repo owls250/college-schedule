@@ -1,0 +1,10 @@
+body {
+    /*background-image: url("images/cherry_blossoms.JPG");*/
+    background-color: lightblue;
+    margin: 5%;
+}
+
+/* not working but supposed to make these things next to each other*/
+#export_name {
+    display: inline-block;
+}

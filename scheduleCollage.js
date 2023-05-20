@@ -1,83 +1,142 @@
-// when the first form is changed
-//const form  = document.querySelector('#scheduleInput');
 const form = document.getElementById('scheduleInput')
+//const form  = document.querySelector('#scheduleInput');
+
+// when the form is submitted
 form.addEventListener('submit', (event) => {
+  
   console.log( 'submit form listener');
-  // validation
+  
+  //testdisplay();
 
-  // not valid: 
-  event.preventDefault();
+  // TODO validation
 
-  //form.submit();
+  // TODO not valid: 
+  // event.preventDefault();
+
   handleFiles();
 
-}); // https://www.javascripttutorial.net/javascript-dom/javascript-form/
-//const inputElement = document.getElementById("schedule1csv");
-//inputElement.addEventListener("change", handleFiles, false);
+}); 
+// https://www.javascripttutorial.net/javascript-dom/javascript-form/
 
+
+// removes all files 
+// right now just in the html?
+// TODO ideally add remove one file
 form.addEventListener('reset', (ev) => {
   console.log( 'reset form listener');
   form.reset();
-});
+}); 
 
+
+// walks through what to do with the files
 function handleFiles() {
   console.log('start handle files');
-  //const fileList = this.files; /* now you can work with the file list */
 
-  const allAssign = [];
-  console.log('form elements' + form.elements);
-  console.log( 'form element 1: ' + form.elements[0]);
-  console.log('form length: ' + form.length);
+  const allAssign = []; // array for all the assignments
   
-  //for (let i = 0; i<form.length; i++) {
-  //  console.log( i + ": " + typeof(form[i]));
-  //  console.log( form[i]);
+  const input = document.querySelector('input[type="file"]').files;
+  // event.target?
 
-  //}
-  for (let element = 0; element < form.elements.length; element++) {
-    //console.log("file ", element);
-    allAssign.push( csvtoarray( form.elements[element]));
-  
+   
+  // read each file and add contents to list
+  if (input) {
+    let filecontents = null;
+    for (let element = 0; element < form.elements.length; element++) {
+      console.log("file ", element);
+
+      const file = input[element]; // https://masteringjs.io/tutorials/fundamentals/upload-file 
+      //file = document.getElementById("scheduleinput").files[element];
+      //const [file] = form.elements[element];
+
+      console.log("allAssign: " + allAssign);
+      filecontents = csvtoarray( file);
+      console.log("filecontents: " + filecontents);
+      allAssign.push( filecontents);
+      console.log("allAssign just added: "+ allAssign);
   }
-  // can't do for in with just a number, must be a list
+  }
 
-  //for (file in fileList) {
-  //  allEvents.push( csvtoarray( file));
-  //}
+  // TODO id date and assignment
   
-  // sort
-  //alert("Hi2")
+  // TODO sort
+  
+  // display the array in a table
   if (allAssign == null) {
     console.log( "null array");
     } else { displayarray( allAssign); }
 
-  //alert('done');
-  
 }
 
+
+// takes a csvfile and turns it into an array
 function csvtoarray( csvfile) {
     console.log('csv reader');
-    //alert('read');
-    let reader = new FileReader(); 
-    console.log( "the type of the csv file: ", typeof(csvfile));
-    console.log( "the file: ", csvfile);
-    //var array;
-    reader.onload = function( event) {
+
+    // console.log( 'file type '+ csvfile.type);
+    //console.log('file type: '+ typeof(csvfile));
+    // console.log( csvfile[0] instanceof Blob);
+    
+    // instantiate new Filereader
+    var reader = new FileReader(); 
+    // causes error because it's not an object
+    reader.readAsText( csvfile); // read file
+    var array;
+    
+    reader.onload = function( e) {
         console.log('onload');
-        var array = reader.result;
+        
+        array = reader.result;
         console.log( "array: ", array); // https://stackoverflow.com/questions/13729301/html5-file-api-how-to-see-the-result-of-readastext
-        return array
+        //content.innerText = reader.result;
+        displayarray(array);
     };
-    form.onchange = function (event) {
+    reader.onerror = function (error) {
+      console.log( 'error: ' + csvfile);
+    };
+    form.onchange = function (e) {
         console.log('onchange');
         reader.readAsText(csvfile);
     
     };
-
+    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
+    console.log("hi2");
+    return array;
 }
+
+
+// takes 2-d array and outputs csv file
+function arraytocsv( array, filename) {
+  // TODO add commas and convert to String
+
+  var csvfile = new Blob( array, {type: 'text/csv'});
+  if (navigator.msSaveBlob) { // IE 10+
+    navigator.msSaveBlob(csvfile, filename);
+  } else {
+    var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(csvfile);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+  }
+  // https://gist.github.com/dhunmoon/d743b327c673b589e7acfcbc5633ff4b
+}
+
+
+// test function
+function testdisplay() {
+  document.getElementById("tble").innerHTML = '<p>blue</p>';
+}
+
 
 function displayarray( data) {
     console.log("begin display array function");
+    
     console.log( "data:" + data)
 
     //let data = csvtoarray( document.getElementById(schedule1csv))
@@ -94,13 +153,18 @@ function displayarray( data) {
     //row = row + '</tr>'
 
     let row = '';
+    let words = data.split( ",");
 
-    for (i=0; i<data.length; i++) {
+    // TODO also create 2-d arrays with the newline character
+
+    console.log("words: ", words);
+
+    for (i=0; i<words.length; i++) {
         console.log( "row: ", i);
         row = '<tr>';
 
-        for (cell=0; cell<data[i].length; cell++) {
-            cl = '<td>' + str(data[i]) + '<td>';
+        for (cell=0; cell<words[i].length; cell++) {
+            cl = '<td>' + words[i] + '<td>';
             row = row + cl;
         }
         row = row + '</tr>'
@@ -108,9 +172,9 @@ function displayarray( data) {
         console.log( row);
     }
     console.log(row);
+    document.getElementById("all-class-schedule").innerHTML = table;
     console.log("Displayed array");
-    //console.log(document.getElementByID("all-class-schedule").innerhtml)
-    //document.getElementByID("all-class-schedule").innerhtml = table;
+
 
 }
 

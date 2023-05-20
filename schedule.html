@@ -56,17 +56,20 @@
             <br>
         </div>
 
+        <!--Submit-->
         <input type="submit" value="Submit All Schedules" id="schedules" onclick="form.submit()">
+        <!-- values is what appears -->
         <!--https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications-->
         <br>
 
-        <input type="button" value="Reset" id="resetscheduleinput" onclick="form.reset();">
+        <!--Reset-->
+        <input type="button" value="Reset" id="resetscheduleinput" onclick="form.reset()">
         <!--https://javascript.plainenglish.io/how-to-upload-file-from-a-webpage-e3e9fa727d73-->
     
     </form>
     </div>
 
-    <!--To say which columns are which-->
+    <!-- Label Columns -->
     <div class="container">
         <form>
             <div class="field>
@@ -84,6 +87,7 @@
     <br>
 
     <!--Schedule-->
+    <div id="tble">
     <table id="all-class-schedule">
         <caption>Semester Schedule</caption>
         <thead>
@@ -99,8 +103,15 @@
         </tbody>
 
     </table>
+    </div>
 
+    <br>
 
+    <div id="export_name">
+        <p>csv name for export</p>
+        <input type="text" id="schedule_output_name_csv">
+        <input type="submit" id="schedule_output_name_submit" value="Submit">
+    </div>
 
     
 

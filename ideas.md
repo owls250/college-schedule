@@ -1,8 +1,10 @@
 # implementation schedule of virtual assistant
 
+Ctrl+Shift+V to preview in Visual Studio Code
+
 ## guts
 - search first row for dates, readings, assignments
-- use first rows to confirm
+- use first rows to confirm. Look for dates pattern m or mm, / or ., d or dd, yyyy or yy or different order or no year
 - if inside cells say "due" with a date put that assignment there
 - for each day list all of the assignments due then by class, type
 
@@ -11,7 +13,7 @@
 
 ## input
 *in order from least to most difficult*
-- csvs
+- csvs (variable numbers of classes)
 - pdf
 - links to syllabus location (up to date)
 

@@ -32,39 +32,19 @@
         <!-- alt method: <input type="file" id="class_schedule_csvs" multiple /> -->
 
         <div class="field">
-            <label for="schedulecsv">Class 1 Schedule</label>
-            <input type="file" id="schedule1csv" accept=".csv" name="file1csv" >
+            <label for="schedule1csv">Upload Schedule (s) Here.</label> <br>
+            <small>Hold CTRL to select multiple.</small> <br>
+            <input type="file" id="schedule1csv" accept=".csv" name="file1csv" multiple>
             <!--https://www.w3schools.cosm/html/html_form_input_types.asp-->
             <br>
         </div>
-        
-        <div class="field">
-            <label for="schedulecsv">Class 2 Schedule</label>
-            <input type="file" id="schedule2csv" accept=".csv" name="file2csv">
-            <br>
-        </div>
 
-        <div class="field">
-            <label for="schedulecsv">Class 3 Schedule</label>
-            <input type="file" id="schedule3csv" accept=".csv" name="file3csv">
-            <br>
-        </div>  
-
-        <div class="field">
-            <label for="schedulecsv">Class 4 Schedule</label>
-            <input type="file" id="schedule4csv" accept=".csv" name="file4csv">
-            <br>
-        </div>
-
-        <!--Submit-->
-        <input type="submit" value="Submit All Schedules" id="schedules" onclick="form.submit()">
-        <!-- values is what appears -->
-        <!--https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications-->
+        <!--Run-->
+        <input type="button" value="Submit All Schedules" id="schedules" onclick="handleFiles()">
         <br>
 
         <!--Reset-->
         <input type="button" value="Reset" id="resetscheduleinput" onclick="form.reset()">
-        <!--https://javascript.plainenglish.io/how-to-upload-file-from-a-webpage-e3e9fa727d73-->
     
     </form>
     </div>

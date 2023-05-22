@@ -1,147 +1,124 @@
 const form = document.getElementById('scheduleInput')
 
-// when the form is submitted
-form.addEventListener('submit', (event) => {
-  
-  console.log( 'submit form listener');
-
-  // TODO validation
-
-  // TODO not valid: 
-  // event.preventDefault();
-
-  handleFiles();
-
-}); 
-// https://www.javascripttutorial.net/javascript-dom/javascript-form/
-
 
 // removes all files 
 // right now just in the html?
 // TODO ideally add remove one file instead of all
 form.addEventListener('reset', (ev) => {
-  console.log( 'reset form listener');
-  form.reset();
-}); 
+    console.log('reset form listener');
+    form.reset();
+});
 
 
 // walks through what to do with the files
-function handleFiles() {
-  console.log('start handle files');
+async function handleFiles() {
+    console.log('start handle files');
 
-  const allAssign = []; // array for all the assignments
-  const input = document.querySelector('input[type="file"]').files;
-   
-  // read each file and add contents to list
-  if (input) {
-    let filecontents = null;
-    for (let element = 0; element < form.elements.length; element++) {
-      console.log("file ", element);
+    const allAssignments = []; // array for all the assignments
+    const input = document.getElementById('schedule1csv').files; // get the files
 
-      const file = input[element]; // https://masteringjs.io/tutorials/fundamentals/upload-file 
-
-      console.log("allAssign: " + allAssign);
-      filecontents = csvtoarray( file);
-      console.log("filecontents: " + filecontents);
-      allAssign.push( filecontents);
-      console.log("allAssign just added: "+ allAssign);
+    // read each file and add contents to list
+    if (input.length > 0) {
+        for (let element = 0; element < input.length; element++) {
+            console.log("file ", element);
+            const file = input[element]; // https://masteringjs.io/tutorials/fundamentals/upload-file
+            console.log("allAssignments: " + allAssignments);
+            let file_contents = await csvtoarray(file);
+            console.log("file_contents: " + file_contents);
+            allAssignments.push(...file_contents);
+            console.log("allAssignments just added: " + allAssignments);
+        }
     }
-  }
+    debugger
 
-  // TODO id date and assignment
-  
-  // TODO sort
-  
-  // display the array in a table
-  /*if (allAssign == null) {
-    console.log( "null array");
-    } else { displayarray( allAssign); }*/
+    // TODO id date and assignment
+
+    // TODO sort
+
+    // display the array in a table
+    /*if (allAssignments == null) {
+      console.log( "null array");
+
+     */
+     displayarray( allAssignments)
 
 }
 
 
 // takes a csvfile and turns it into an array
-function csvtoarray( csvfile) {
+async function csvtoarray(csvfile) {
     console.log('csv reader');
-    
+
     // instantiate new Filereader
-    var reader = new FileReader(); 
-    // causes error because it's not an object
-    reader.readAsText( csvfile); // read file
-    var array;
-    
-    reader.onload = function( e) {
-        console.log('onload');
-        
-        array = reader.result;
-        console.log( "array: ", array); // https://stackoverflow.com/questions/13729301/html5-file-api-how-to-see-the-result-of-readastext
-        return process( array);
-        //return array;
-        //displayarray(array);
-    };
-    reader.onerror = function (error) {
-      console.log( 'error: ' + csvfile);
-    };
-    /*form.onchange = function (e) {
-        console.log('onchange');
+    const file_reader_promise = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        // causes error because it's not an object
+        reader.onload = e => {
+            console.log('YOU KNOW 100% THE FILE HAS BEEN LOADED');
+            // read file
+            resolve(process(reader.result))
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
         reader.readAsText(csvfile);
-    
-    };*/
-    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
-    //console.log("hi2");
-    return process( array);
+    });
+    return await file_reader_promise;
 }
 
 
 // split into array
-function process( csvin) {
-  let rows = csvin.split( "\n");
-  const array = [];
+function process(csvin) {
+    let rows = csvin.split("\n");
+    const array = [];
 
-  // for every row
-  for (let r = 0; r < rows.length; r++) { 
-    let words = rows[r].split( ","); // split the row
-    array.push(words); // add to the new array
-  }
+    // for every row
+    for (let r = 1; r < rows.length; r++) {
+        // if (rows[r] === "") {
+        //     continue;
+        // }
+        // rows[r] = rows[r].replace(/(\r\n|\n|\r)/gm, ""); // github copilot magic ???
+        let words = rows[r].split(","); // split the row
+        array.push(words); // add to the new array
+    }
 
-  console.log("array: ", array);
-  return array
+    return array
 }
 
 
 // takes 2-d array and outputs csv file
-function arraytocsv( array, filename) {
+function arraytocsv(array, filename) {
 
-  var csvfile = new Blob( array, {type: 'text/csv'});
-  if (navigator.msSaveBlob) { // IE 10+
-    navigator.msSaveBlob(csvfile, filename);
-  } else {
-    var link = document.createElement("a");
-    if (link.download !== undefined) { // feature detection
-        // Browsers that support HTML5 download attribute
-        var url = URL.createObjectURL(csvfile);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    var csvfile = new Blob(array, {type: 'text/csv'});
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(csvfile, filename);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            var url = URL.createObjectURL(csvfile);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
-  }
-  // https://gist.github.com/dhunmoon/d743b327c673b589e7acfcbc5633ff4b
+    // https://gist.github.com/dhunmoon/d743b327c673b589e7acfcbc5633ff4b
 }
 
 
 // test function
 function testdisplay(array) {
-  document.getElementById("tble").innerHTML = array;
+    document.getElementById("tble").innerHTML = array;
 }
 
 
-function displayarray( words) {
+function displayarray(words) {
     console.log("begin display array function");
-    
-    console.log( "data:" + words)
+
+    console.log("data:" + words)
 
     //let data = csvtoarray( document.getElementById(schedule1csv))
     let table = '';
@@ -162,23 +139,21 @@ function displayarray( words) {
 
     console.log("words: ", words);
 
-    for (i=0; i<words.length; i++) {
-        console.log( "row: ", i);
+    for (let i = 0; i < words.length; i++) {
+        console.log("row: ", i);
         row = '<tr>';
 
-        for (cell=0; cell<words[i].length; cell++) {
-            cl = '<td>' + words[i] + '<td>';
+        for (let cell = 0; cell < words[i].length; cell++) {
+            let cl = '<td>' + words[i] + '<td>';
             row = row + cl;
         }
         row = row + '</tr>'
         table = table + row;
-        console.log( row);
+        console.log(row);
     }
     console.log(row);
     document.getElementById("all-class-schedule").innerHTML = table;
     console.log("Displayed array");
-
-
 }
 
 

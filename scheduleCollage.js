@@ -1,6 +1,5 @@
 const form = document.getElementById('scheduleInput')
 
-
 // walks through what to do with the files
 async function handleFiles() {
   console.log('start handle files');
@@ -10,26 +9,20 @@ async function handleFiles() {
    
   // read each file and add contents to allAssign
   if (input.length > 0) {
-    for (let element = 0; element < input.length; element++) {
-      console.log("file ", element);
 
+    for (let element = 0; element < input.length; element++) {
       const file = input[element]; // https://masteringjs.io/tutorials/fundamentals/upload-file 
 
       let filecontents = await csvtoarray( file);
-      console.log(filecontents)
       allAssignments.push(...filecontents);
-      console.log("allAssign just added: "+ allAssignments);
     }
   }
 
   // TODO sort
-  allAssignments = array_sort_date( allAssignments);
+  const sorted_assignments = array_sort_date( allAssignments);
   
   // display the array in a table
-  displayarray( allAssignments);
-  //if (allAssign != null) {
-  //  console.log( "null array");
-  //  } else { displayarray( allAssign); }
+  displayarray( sorted_assignments);
 
 }
 
@@ -41,7 +34,6 @@ async function csvtoarray( csvfile) {
     // causes error because it's not an object
     
     var array;
-    
     const file_reader_promise = new Promise(( resolve, reject) => {
       
       const reader = new FileReader(); // instantiate new Filereader
@@ -56,12 +48,7 @@ async function csvtoarray( csvfile) {
       };
 
       reader.readAsText( csvfile); // read file
-    });
-    /*form.onchange = function (e) {
-        console.log('onchange');
-        reader.readAsText(csvfile);
-    
-    };*/
+    });  
     // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
 
     return await file_reader_promise;
@@ -79,6 +66,7 @@ function process( csvin) {
       continue;
     }
     let words = rows[r].split( ","); // split the row
+    // add class
     array.push(words); // add to the new array
   }
 
@@ -87,8 +75,7 @@ function process( csvin) {
   // remove label row (first row)
   array.shift();
 
-  console.log("array: ", array);
-  return array
+  return array;
 }
 
 
@@ -121,36 +108,47 @@ function testdisplay(array) {
 }
 
 
-function array_sort_date(array) {
-  
+// sorts an array by date if date is in the first column
+function array_sort_date( array) {
+  // determine date format
+  // mm/dd or dd/mm or mm/dd/yyyy or dd/mm/yyyy
+
+  // turn into date format
+  for (let i=0; i<array.length; i++) {
+    array[i][0] = new Date(array[i][0]);
+  } 
+
+  // sort
+  array.sort(function(a,b){return a[0] - b[0]});
+  // https://www.w3schools.com/js/js_array_sort.asp
+
+  // put date in smaller format
+
+  console.log(array);
+
+  return array;
 }
 
 
 function displayarray( words) {
     console.log("begin display array function");
-    
-    console.log( "data:" + words)
 
     let table = '<table id="all-class-schedule"><thead><tr><th>Date</th><th>Readings</th><th>Assignments</th></tr></thead><tbody id="assignments">';
 
-    // TODO also create 2-d arrays with the newline character
-
-    console.log("words: ", words);
-
     for (let i=0; i<words.length; i++) {
-      //console.log( "row: ", i);
       let row = '<tr>';
 
       for (cell=0; cell<words[i].length; cell++) {
         cl = '<td>' + words[i][cell] + '</td>';
         row = row + cl;
       }
+
       row = row + '</tr>';
       table = table + row;
-      //console.log( row);
     }
+
     table += '</tbody></table>';
-    console.log(table)
+    
     document.getElementById("all-class-schedule").innerHTML = table;
     console.log("Displayed array");
 

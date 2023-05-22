@@ -1,12 +1,9 @@
 const form = document.getElementById('scheduleInput')
-//const form  = document.querySelector('#scheduleInput');
 
 // when the form is submitted
 form.addEventListener('submit', (event) => {
   
   console.log( 'submit form listener');
-  
-  //testdisplay();
 
   // TODO validation
 
@@ -21,7 +18,7 @@ form.addEventListener('submit', (event) => {
 
 // removes all files 
 // right now just in the html?
-// TODO ideally add remove one file
+// TODO ideally add remove one file instead of all
 form.addEventListener('reset', (ev) => {
   console.log( 'reset form listener');
   form.reset();
@@ -33,10 +30,7 @@ function handleFiles() {
   console.log('start handle files');
 
   const allAssign = []; // array for all the assignments
-  
   const input = document.querySelector('input[type="file"]').files;
-  // event.target?
-
    
   // read each file and add contents to list
   if (input) {
@@ -45,15 +39,13 @@ function handleFiles() {
       console.log("file ", element);
 
       const file = input[element]; // https://masteringjs.io/tutorials/fundamentals/upload-file 
-      //file = document.getElementById("scheduleinput").files[element];
-      //const [file] = form.elements[element];
 
       console.log("allAssign: " + allAssign);
       filecontents = csvtoarray( file);
       console.log("filecontents: " + filecontents);
       allAssign.push( filecontents);
       console.log("allAssign just added: "+ allAssign);
-  }
+    }
   }
 
   // TODO id date and assignment
@@ -61,9 +53,9 @@ function handleFiles() {
   // TODO sort
   
   // display the array in a table
-  if (allAssign == null) {
+  /*if (allAssign == null) {
     console.log( "null array");
-    } else { displayarray( allAssign); }
+    } else { displayarray( allAssign); }*/
 
 }
 
@@ -71,10 +63,6 @@ function handleFiles() {
 // takes a csvfile and turns it into an array
 function csvtoarray( csvfile) {
     console.log('csv reader');
-
-    // console.log( 'file type '+ csvfile.type);
-    //console.log('file type: '+ typeof(csvfile));
-    // console.log( csvfile[0] instanceof Blob);
     
     // instantiate new Filereader
     var reader = new FileReader(); 
@@ -87,26 +75,42 @@ function csvtoarray( csvfile) {
         
         array = reader.result;
         console.log( "array: ", array); // https://stackoverflow.com/questions/13729301/html5-file-api-how-to-see-the-result-of-readastext
-        //content.innerText = reader.result;
-        displayarray(array);
+        return process( array);
+        //return array;
+        //displayarray(array);
     };
     reader.onerror = function (error) {
       console.log( 'error: ' + csvfile);
     };
-    form.onchange = function (e) {
+    /*form.onchange = function (e) {
         console.log('onchange');
         reader.readAsText(csvfile);
     
-    };
+    };*/
     // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
-    console.log("hi2");
-    return array;
+    //console.log("hi2");
+    return process( array);
+}
+
+
+// split into array
+function process( csvin) {
+  let rows = csvin.split( "\n");
+  const array = [];
+
+  // for every row
+  for (let r = 0; r < rows.length; r++) { 
+    let words = rows[r].split( ","); // split the row
+    array.push(words); // add to the new array
+  }
+
+  console.log("array: ", array);
+  return array
 }
 
 
 // takes 2-d array and outputs csv file
 function arraytocsv( array, filename) {
-  // TODO add commas and convert to String
 
   var csvfile = new Blob( array, {type: 'text/csv'});
   if (navigator.msSaveBlob) { // IE 10+
@@ -129,15 +133,15 @@ function arraytocsv( array, filename) {
 
 
 // test function
-function testdisplay() {
-  document.getElementById("tble").innerHTML = '<p>blue</p>';
+function testdisplay(array) {
+  document.getElementById("tble").innerHTML = array;
 }
 
 
-function displayarray( data) {
+function displayarray( words) {
     console.log("begin display array function");
     
-    console.log( "data:" + data)
+    console.log( "data:" + words)
 
     //let data = csvtoarray( document.getElementById(schedule1csv))
     let table = '';
@@ -153,7 +157,6 @@ function displayarray( data) {
     //row = row + '</tr>'
 
     let row = '';
-    let words = data.split( ",");
 
     // TODO also create 2-d arrays with the newline character
 

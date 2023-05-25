@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en/us"> <!-- English/US -->
 
 
 <head>
+    <!-- Character Set -->
+    <meta charset="UTF-8"> 
+
     <!--About the page-->
     <title>Schedule</title>
+
     <!-- for a favicon <link rel="icon" type="image/jpeg" href="fill this in">-->
 
     <!--CSS-->
     <link rel="stylesheet" href="style.css"> 
     <!--keywords, etc https://www.w3schools.com/html/html_head.asp-->
 </head>
+
 
 <body>
     <h1>Schedule</h1>
@@ -20,47 +25,27 @@
     <h3>How to use</h3>
     <ol>
         <li>Copy your schedule from your syllabus/schedule pdf to Excel/Google Sheets</li>
-        <li>Save the file/ download it</li>
+        <li>Save the file/ download it as a csv with the class name as the file name</li>
         <li>Repeat for each class, one file per class</li>
-        <li>Use the browse buttons below to select each csv file</li>
-        <li>Click Submit All Schedules</li>
+        <li>Use the browse button below to select each csv file</li>
+        <li>Click Submit to submit all schedules</li>
     </ol>
 
     <!--Input the csv files-->
     <div class="container">
     <form id="scheduleInput" action="/upload" enctype="multipart/form-data" method="post" class="form">
-        <!-- alt method: <input type="file" id="class_schedule_csvs" multiple /> -->
-
-        <div class="field">
-            <label for="schedulecsv">Class 1 Schedule</label>
-            <input type="file" id="schedule1csv" accept=".csv" name="file1csv" >
-            <!--https://www.w3schools.cosm/html/html_form_input_types.asp-->
-            <br>
-        </div>
         
+        <!--Input-->
         <div class="field">
-            <label for="schedulecsv">Class 2 Schedule</label>
-            <input type="file" id="schedule2csv" accept=".csv" name="file2csv">
-            <br>
-        </div>
-
-        <div class="field">
-            <label for="schedulecsv">Class 3 Schedule</label>
-            <input type="file" id="schedule3csv" accept=".csv" name="file3csv">
-            <br>
-        </div>  
-
-        <div class="field">
-            <label for="schedulecsv">Class 4 Schedule</label>
-            <input type="file" id="schedule4csv" accept=".csv" name="file4csv">
+            <label for="schedule_csv">Class Schedules</label>
+            <input type="file" id="schedule_csv" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file1csv" multiple="multiple">
+            <!--https://www.w3schools.cosm/html/html_form_input_types.asp-->
+            <!--https://stackoverflow.com/questions/11832930/html-input-file-accept-attribute-file-type-csv-->
             <br>
         </div>
 
         <!--Submit-->
-        <input type="submit" value="Submit All Schedules" id="schedules" onclick="form.submit()">
-        <!-- values is what appears -->
-        <!--https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications-->
-        <br>
+        <input type="button" value="Submit" id="submitSchedules" onclick="handleFiles()">
 
         <!--Reset-->
         <input type="button" value="Reset" id="resetscheduleinput" onclick="form.reset()">
@@ -68,6 +53,7 @@
     
     </form>
     </div>
+
 
     <!-- Label Columns -->
     <div class="container">
@@ -83,16 +69,23 @@
             </div>
         </form>
     </div>
+
+    <div class="repeat_events">
+        <form>
+            <input type="text" value="Class">
+            <input type="multi-select" value="">
+        </form>
+    </div>
     
     <br>
 
     <!--Schedule-->
-    <div id="tble">
     <table id="all-class-schedule">
         <caption>Semester Schedule</caption>
         <thead>
             <tr>
             <th>Date</th>
+            <th>Class</th>
             <th>Reading</th>
             <th>Assignment</th>
             </tr>
@@ -103,14 +96,14 @@
         </tbody>
 
     </table>
-    </div>
+
 
     <br>
 
     <div id="export_name">
         <p>csv name for export</p>
         <input type="text" id="schedule_output_name_csv">
-        <input type="submit" id="schedule_output_name_submit" value="Submit">
+        <!--<input type="button" id="schedule_output_export" value="Export" onclick="arraytocsv()">-->
     </div>
 
     

@@ -2,11 +2,16 @@
 // take in csv's with assignment details, sort the assignments, and then display (and possibly export to csv)
 // Sophia Ungar with advice from Forrest
 
-const form = document.getElementById('scheduleInput')
+
+// TODO Tasks
+// edit entries directly
+// Google Calendar API to upload tasks or events
+// Make it look pretty
+
 
 // walks through what to do with the files from reading to exporting
 async function handleFiles() {
-  console.log('start handle files');
+  // console.log('start handle files');
 
   // initialize
   const allAssignments = []; // array for all the assignments
@@ -37,9 +42,10 @@ async function handleFiles() {
 
 // takes a csvfile and turns it into an array
 async function csvToArray( csvfile) {
-    console.log('csv reader');
+    // console.log('csv reader');
     
-    // causes error because it's not an object
+
+    // TODO read xlsx files
     
     var array;
     const fileReaderPromise = new Promise(( resolve, reject) => {
@@ -60,7 +66,6 @@ async function csvToArray( csvfile) {
     // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
 
     
-
     return await fileReaderPromise;
 }
 
@@ -82,6 +87,7 @@ function process( csvin, name) {
     words = words.split( ","); // split the row
     wordZero = words[0]; // get the first word
     words.shift(); // everything but the first word
+
     array.push([wordZero, name, ...words]); // add to the new array
   }
 
@@ -119,12 +125,11 @@ function arrayToCsv( array) {
     const link = document.createElement('a')
     link.setAttribute('href', objUrl)
     link.setAttribute('download', filename+'.csv')
-    link.textContent = 'Click to Download'
+    link.textContent = 'Download csv of Schedule'
 
     document.querySelector('body').append(link)
   } // adapted from https://medium.com/@idorenyinudoh10/how-to-export-data-from-javascript-to-a-csv-file-955bdfc394a9
 }
-// why the line in between each entry?
 
 
 // test function
@@ -135,7 +140,7 @@ function testDisplay(array) {
 
 // sorts an array by date if date is in the first column
 function arraySortByDate( array) {
-  // determine date format
+  // TODO determine date format
   // mm/dd or dd/mm or mm/dd/yyyy or dd/mm/yyyy
 
   // turn into date format
@@ -147,38 +152,38 @@ function arraySortByDate( array) {
   array.sort(function(a,b){return a[0] - b[0]});
   // https://www.w3schools.com/js/js_array_sort.asp
 
-  // put date in smaller format
-
-  console.log(array);
+  // console.log(array);
 
   return array;
 }
 
 
 function displayArray( words) {
-    console.log("begin display array function");
+    // console.log("begin display array function");
 
+    // headings
     let table = '<table id="all-class-schedule"><thead><tr><th>Date</th><th>Class</th><th>Readings</th><th>Assignments</th></tr></thead><tbody id="assignments">';
 
+    // assignments
     for (let i=0; i<words.length; i++) {
-      let row = '<tr>';
+      let row = '<tr>'; // row
 
       // date
-      row += '<td>' + words[i][0].toLocaleString() + '</td>';
+      row += '<td>' + words[i][0].toLocaleString() + '</td>'; // gets rid of time zone
 
+      // everything else
       for (cell=1; cell<words[i].length; cell++) {
-        cl = '<td>' + words[i][cell] + '</td>';
+        cl = '<td>' + words[i][cell] + '</td>'; 
         row = row + cl;
       }
 
-      row = row + '</tr>';
-      table = table + row;
+      row = row + '</tr>'; 
+      table = table + row; // add row to table
     }
 
     table += '</tbody></table>';
     
-    document.getElementById("all-class-schedule").innerHTML = table;
-    console.log("Displayed array");
+    document.getElementById("all-class-schedule").innerHTML = table; // change html to table
 
 
 }
